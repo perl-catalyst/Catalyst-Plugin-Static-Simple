@@ -8,7 +8,7 @@ use MIME::Types ();
 use MooseX::Types::Moose qw/ArrayRef Str/;
 use namespace::autoclean;
 
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 
 has _static_file => ( is => 'rw' );
 has _static_debug_message => ( is => 'rw', isa => ArrayRef[Str] );
@@ -172,6 +172,7 @@ sub _locate_static_file {
 
 sub _serve_static {
     my $c = shift;
+    my $config = $c->config->{static} ||= {};
 
     my $full_path = shift || $c->_static_file;
     my $type      = $c->_ext_to_type( $full_path );
@@ -180,6 +181,12 @@ sub _serve_static {
     $c->res->headers->content_type( $type );
     $c->res->headers->content_length( $stat->size );
     $c->res->headers->last_modified( $stat->mtime );
+    # Tell Firefox & friends its OK to cache, even over SSL:
+    $c->res->headers->header('Cache-control' => 'public');
+    # Optionally, set a fixed expiry time:
+    if ($config->{expires}) {
+        $c->res->headers->expires(time() + $config->{expires});
+    }
 
     my $fh = IO::File->new( $full_path, 'r' );
     if ( defined $fh ) {
@@ -307,7 +314,7 @@ the operation by adding various configuration options. In a production
 environment, you will probably want to use your webserver to deliver
 static content; for an example see L<USING WITH APACHE>, below.
 
-=head1 DEFAULT BEHAVIOR
+=head1 DEFAULT BEHAVIOUR
 
 By default, Static::Simple will deliver all files having extensions
 (that is, bits of text following a period (C<.>)), I<except> files
@@ -450,6 +457,23 @@ module, you may enter your own extension to MIME type mapping.
         },
     );
 
+=head2 Controlling caching with Expires header
+
+The files served by Static::Simple will have a Last-Modified header set,
+which allows some browsers to cache them for a while. However if you want
+to explicitly set an Expires header, such as to allow proxies to cache your
+static content, then you can do so by setting the "expires" config option.
+
+The value indicates the number of seconds after access time to allow caching.
+So a value of zero really means "don't cache at all", and any higher values
+will keep the file around for that long.
+
+    MyApp->config(
+        static => {
+            expires => 3600, # Caching allowed for one hour.
+        },
+    );
+
 =head2 Compatibility with other plugins
 
 Since version 0.12, Static::Simple plays nice with other plugins.  It no
@@ -572,6 +596,8 @@ Justin Wheeler (dnm)
 
 Matt S Trout, <mst@shadowcat.co.uk>
 
+Toby Corkindale, <tjc@wintrmute.net>
+
 =head1 THANKS
 
 The authors of Catalyst::Plugin::Static:
@@ -586,7 +612,7 @@ For the include_path code from Template Toolkit:
 
 =head1 COPYRIGHT
 
-Copyright (c) 2005 - 2009
+Copyright (c) 2005 - 2011
 the Catalyst::Plugin::Static::Simple L</AUTHOR> and L</CONTRIBUTORS>
 as listed above.
 

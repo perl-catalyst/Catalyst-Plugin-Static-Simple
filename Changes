@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::Plugin::Static::Simple
 
+0.30   2011-02-xx hh:mm:00
+        - Add Cache-Control:public header
+        - Optionally provide Expires header
+
 0.29   2010-02-01 18:45:00
         - Switch from override to around, because really, wtf
 
