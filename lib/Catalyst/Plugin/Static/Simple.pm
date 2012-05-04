@@ -6,6 +6,7 @@ use File::Spec ();
 use IO::File ();
 use MIME::Types ();
 use MooseX::Types::Moose qw/ArrayRef Str/;
+use Catalyst::Utils;
 use namespace::autoclean;
 
 our $VERSION = '0.30';
@@ -16,7 +17,7 @@ has _static_debug_message => ( is => 'rw', isa => ArrayRef[Str] );
 before prepare_action => sub {
     my $c = shift;
     my $path = $c->req->path;
-    my $config = $c->config->{static};
+    my $config = $c->config->{'Plugin::Static::Simple'};
 
     $path =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
 
@@ -67,7 +68,7 @@ around dispatch => sub {
     return if ( $c->res->status != 200 );
 
     if ( $c->_static_file ) {
-        if ( $c->config->{static}{no_logs} && $c->log->can('abort') ) {
+        if ( $c->config->{'Plugin::Static::Simple'}->{no_logs} && $c->log->can('abort') ) {
            $c->log->abort( 1 );
         }
         return $c->_serve_static;
@@ -81,7 +82,7 @@ before finalize => sub {
     my $c = shift;
 
     # display all log messages
-    if ( $c->config->{static}{debug} && scalar @{$c->_debug_msg} ) {
+    if ( $c->config->{'Plugin::Static::Simple'}->{debug} && scalar @{$c->_debug_msg} ) {
         $c->log->debug( 'Static::Simple: ' . join q{ }, @{$c->_debug_msg} );
     }
 };
@@ -89,7 +90,15 @@ before finalize => sub {
 before setup_finalize => sub {
     my $c = shift;
 
-    my $config = $c->config->{static} ||= {};
+    $c->log->warn("Deprecated 'static' config key used, please use the key 'Plugin::Static::Simple' instead")
+        if exists $c->config->{static};
+    my $config
+        = $c->config->{'Plugin::Static::Simple'}
+        = $c->config->{'static'}
+        = Catalyst::Utils::merge_hashes(
+            $c->config->{'Plugin::Static::Simple'} || {},
+            $c->config->{static} || {}
+        );
 
     $config->{dirs} ||= [];
     $config->{include_path} ||= [ $c->config->{root} ];
@@ -117,7 +126,7 @@ sub _locate_static_file {
         File::Spec->no_upwards( File::Spec->splitdir( $path ) )
     );
 
-    my $config = $c->config->{static};
+    my $config = $c->config->{'Plugin::Static::Simple'};
     my @ipaths = @{ $config->{include_path} };
     my $dpaths;
     my $count = 64; # maximum number of directories to search
@@ -172,7 +181,7 @@ sub _locate_static_file {
 
 sub _serve_static {
     my $c = shift;
-    my $config = $c->config->{static} ||= {};
+    my $config = $c->config->{'Plugin::Static::Simple'};
 
     my $full_path = shift || $c->_static_file;
     my $type      = $c->_ext_to_type( $full_path );
@@ -204,7 +213,7 @@ sub _serve_static {
 sub serve_static_file {
     my ( $c, $full_path ) = @_;
 
-    my $config = $c->config->{static} ||= {};
+    my $config = $c->config->{'Plugin::Static::Simple'};
 
     if ( -e $full_path ) {
         $c->_debug_msg( "Serving static file: $full_path" )
@@ -225,7 +234,7 @@ sub serve_static_file {
 sub _ext_to_type {
     my ( $c, $full_path ) = @_;
 
-    my $config = $c->config->{static};
+    my $config = $c->config->{'Plugin::Static::Simple'};
 
     if ( $full_path =~ /.*\.(\S{1,})$/xms ) {
         my $ext = $1;
