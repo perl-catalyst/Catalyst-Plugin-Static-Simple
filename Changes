@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::Plugin::Static::Simple
 
+        - Updated docs to reflect config key change from 'static' to
+          'Plugin::Static::Simple'
+
 0.30   2012-05-04 17:05:00
         - Add Cache-Control:public header
         - Optionally provide Expires header
