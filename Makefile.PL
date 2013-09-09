@@ -8,7 +8,7 @@ name 'Catalyst-Plugin-Static-Simple';
 all_from 'lib/Catalyst/Plugin/Static/Simple.pm';
 
 requires 'Catalyst::Runtime' => '5.80008';
-requires 'MIME::Types' => '1.25';
+requires 'MIME::Types' => '2.03';
 requires 'Test::More';
 requires 'Moose';
 requires 'MooseX::Types';
