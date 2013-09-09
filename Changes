@@ -2,6 +2,7 @@ Revision history for Perl extension Catalyst::Plugin::Static::Simple
 
         - Updated docs to reflect config key change from 'static' to
           'Plugin::Static::Simple' (RT#77709)
+        - Migrated repository from subversion to git
 
 0.30   2012-05-04 17:05:00
         - Add Cache-Control:public header
