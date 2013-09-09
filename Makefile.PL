@@ -34,6 +34,6 @@ if( can_use 'Catalyst::Plugin::SubRequest' ) {
 }
 
 auto_install;
-resources repository => 'http://dev.catalyst.perl.org/repos/Catalyst/Catalyst-Plugin-Static-Simple/trunk/';
+resources repository => 'git://git.shadowcat.co.uk/catagits/Catalyst-Plugin-Static-Simple.git';
 
 WriteAll;
