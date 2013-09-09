@@ -112,9 +112,6 @@ before setup_finalize => sub {
     # load up a MIME::Types object, only loading types with
     # at least 1 file extension
     $config->{mime_types_obj} = MIME::Types->new( only_complete => 1 );
-
-    # preload the type index hash so it's not built on the first request
-    $config->{mime_types_obj}->create_type_index;
 };
 
 # Search through all included directories for the static file
