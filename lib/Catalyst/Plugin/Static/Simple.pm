@@ -14,6 +14,15 @@ our $VERSION = '0.31';
 has _static_file => ( is => 'rw' );
 has _static_debug_message => ( is => 'rw', isa => ArrayRef[Str] );
 
+after setup_finalize => sub {
+  my $c = shift;
+
+  # New: Turn off new 'autoflush' flag in logger (see Catalyst::Log).
+  # This is needed to surpress output of debug log messages for 
+  # static requests:
+  $c->log->autoflush(0) if $c->log->can('autoflush');
+};
+
 before prepare_action => sub {
     my $c = shift;
     my $path = $c->req->path;
