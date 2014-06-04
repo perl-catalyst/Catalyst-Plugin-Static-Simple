@@ -9,7 +9,7 @@ use MooseX::Types::Moose qw/ArrayRef Str/;
 use Catalyst::Utils;
 use namespace::autoclean;
 
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 
 has _static_file => ( is => 'rw' );
 has _static_debug_message => ( is => 'rw', isa => ArrayRef[Str] );
