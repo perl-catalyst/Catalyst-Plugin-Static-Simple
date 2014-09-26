@@ -1,6 +1,6 @@
 Revision history for Perl extension Catalyst::Plugin::Static::Simple
 
-0.33   TBR
+0.33   2014-09-26 17:00 BST
        - Fixed merging of deprecated 'static' config and new one
 
 0.32   2014-06-04 17:00 EDT
