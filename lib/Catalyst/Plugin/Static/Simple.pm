@@ -322,7 +322,7 @@ properly.
 
 If the plugin can not find the file, the request is dispatched to your
 application instead. This means you are responsible for generating a
-C<404> error if your applicaton can not process the request:
+C<404> error if your application can not process the request:
 
    # handled by static::simple, not dispatched to your application
    /images/exists.png
