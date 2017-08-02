@@ -64,7 +64,7 @@ before prepare_action => sub {
     }
 
     # Does the path have an extension?
-    if ( $path =~ /.*\.(\S{1,})$/xms ) {
+    if ( $path =~ /\.([^\/\\]+)$/m ) {
         # and does it exist?
         $c->_locate_static_file( $path );
     }
