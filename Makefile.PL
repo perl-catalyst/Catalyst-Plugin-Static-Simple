@@ -12,6 +12,7 @@ requires 'MIME::Types' => '2.03';
 requires 'Test::More';
 requires 'Moose';
 requires 'MooseX::Types';
+requires 'IO::File::WithPath';
 requires 'namespace::autoclean';
 
 test_requires 'Test::More';
