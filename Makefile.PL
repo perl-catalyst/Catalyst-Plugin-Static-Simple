@@ -19,7 +19,6 @@ my %META = (
         'Catalyst::Runtime'     => '5.80008',
         'MIME::Types'           => '2.03',
         'Moose'                 => 0,
-        'MooseX::Types'         => 0,
         'namespace::autoclean'  => 0,
       },
     },
