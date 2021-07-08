@@ -3,7 +3,7 @@ package Catalyst::Plugin::Static::Simple;
 use Moose::Role;
 use File::stat;
 use File::Spec ();
-use IO::File ();
+use IO::File::WithPath ();
 use MIME::Types ();
 use MooseX::Types::Moose qw/ArrayRef Str/;
 use Catalyst::Utils;
@@ -211,7 +211,7 @@ sub _serve_static {
         $c->res->headers->expires(time() + $config->{expires});
     }
 
-    my $fh = IO::File->new( $full_path, 'r' );
+    my $fh = eval { IO::File::WithPath->new( $full_path, 'r' ) };
     if ( defined $fh ) {
         binmode $fh;
         $c->res->body( $fh );
