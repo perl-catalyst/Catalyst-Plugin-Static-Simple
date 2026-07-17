@@ -1,5 +1,6 @@
 Revision history for Perl extension Catalyst::Plugin::Static::Simple
 
+0.38 - 2026-07-17
        - canonical repository is now github, rather than catagits
 
 0.37 - 2021-05-05
